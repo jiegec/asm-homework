@@ -21,7 +21,7 @@ close:
     syscall
     ret
 
-# int open(int fd, int flags)
+# int open(char *path, int flags)
 .global open
 open:
     mov rax, SYS_open

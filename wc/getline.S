@@ -5,7 +5,7 @@
 # int getline(int fd, char *buf, int len)
 .global getline
 getline:
-    push rbx
+    push rbx # callee saved
     cmp rdx, 1
     jl invalid_arg 
     sub rdx, 1
@@ -44,7 +44,7 @@ good:
     jmp end
 
 end:
-    mov BYTE PTR[rsi + rbx], 0
+    mov BYTE PTR[rsi], 0
     jmp quit
 
 invalid_arg:
