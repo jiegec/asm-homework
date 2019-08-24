@@ -3,6 +3,8 @@
 .section .text
 
 # int getline(int fd, char *buf, int len)
+# return the number of bytes written sans 0 and LF
+# return -1 on EOF, -2 on fail
 .global getline
 getline:
     push rbx # callee saved
@@ -15,7 +17,7 @@ getline:
 
 loop:
     cmp rbx, rdx
-    je end
+    je good
 
     push rdx
     mov rdx, 1
@@ -23,7 +25,7 @@ loop:
     pop rdx
 
     cmp rax, 0
-    je end # EOF
+    je eof
     jl fail
 
     mov r8b, BYTE PTR [rsi]
@@ -36,11 +38,18 @@ loop:
     jmp loop
 
 fail:
-    mov rax, -1
+    mov rax, -2
     jmp end
 
 good:
     mov rax, rbx
+    jmp end
+
+eof:
+    mov r8, -1
+    mov rax, rbx
+    test rbx, rbx
+    cmovz rax, r8
     jmp end
 
 end:
@@ -48,7 +57,7 @@ end:
     jmp quit
 
 invalid_arg:
-    mov rax, -1
+    mov rax, -2
     jmp quit
 
 quit:

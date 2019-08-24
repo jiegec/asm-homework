@@ -35,5 +35,5 @@ zero:
     ret
 
 .section .rodata
-zero_str: .string "0"
+zero_str: .ascii "0"
 zero_str_end:

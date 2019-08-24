@@ -2,7 +2,8 @@
 
 .set O_RDONLY, 0
 .set O_WRONLY, 1
-.set O_CREAT, 64
+.set O_CREAT, 0100
+.set O_TRUNC, 01000
 
 .section .text
 # on the stack: argc and argv
@@ -21,7 +22,7 @@ _start:
     mov rbx, rax # input fd
 
     mov rdi, QWORD PTR [rsp + 24] # argv[2]
-    mov rsi, O_WRONLY | O_CREAT
+    mov rsi, O_WRONLY | O_CREAT | O_TRUNC
     mov rdx, 0755
     call open
     cmp rax, 0
@@ -36,9 +37,9 @@ loop:
     lea rsi, buffer
     mov rdx, buffer_end - buffer
     call getline
-    cmp rax, buffer_end - buffer
+    cmp rax, buffer_end - buffer - 1
     je loop # long line, again
-    cmp rax, 0
+    cmp rax, -1
     je end_loop # EOF
     jl read_fail
     add r13, 1
@@ -74,11 +75,11 @@ read_fail:
     call exit
 
 .section .rodata
-wrong_argc_str: .string "Usage: wc <input_file> <output_file>.\n"
+wrong_argc_str: .ascii "Usage: wc <input_file> <output_file>.\n"
 wrong_argc_str_end:
-open_fail_str: .string "Open/create file failed.\n"
+open_fail_str: .ascii "Open/create file failed.\n"
 open_fail_str_end:
-read_fail_str: .string "Read input file failed.\n"
+read_fail_str: .ascii "Read input file failed.\n"
 read_fail_str_end:
 
 .section .data
