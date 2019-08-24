@@ -8,6 +8,11 @@ _start:
     cmp rdi, 3
     jne wrong_argc
 
+    mov rdi, 1
+    lea rsi, buffer
+    mov rdx, buffer_end - buffer
+    call getline
+
     call exit
     # unreachable
 
@@ -21,3 +26,7 @@ wrong_argc:
 .section .rodata
 wrong_argc_str: .string "Usage: wc <input_file> <output_file>\n"
 wrong_argc_str_end:
+
+.section .data
+buffer: .space 1024
+buffer_end:

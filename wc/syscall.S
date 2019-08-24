@@ -3,6 +3,10 @@
 
 .section .text
 
+# args: rdi, rsi, rdx, r10, r8, r9
+# number: rax
+# clobber: rcx, r11
+
 # void exit(int code)
 .global exit
 exit:
@@ -28,5 +32,12 @@ open:
 .global write
 write:
     mov rax, SYS_write
+    syscall
+    ret
+
+# int read(int fd, char *buf, int length)
+.global read
+read:
+    mov rax, SYS_read
     syscall
     ret
